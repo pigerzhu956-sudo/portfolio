@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>朱利锋 Piger Zhu | AI 应用 · Agent · AI 工作流</title>
+<meta name="description" content="朱利锋 Piger Zhu，数字媒体艺术本科，实践 AI 应用、Agent、自动化工作流与 AI 视频。查看项目经历、技能与联系方式，下载个人简历。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet"></noscript>
+<style>
+  :root {
+    --bg: #f6f4ee;
+    --bg-soft: #efece3;
+    --ink: #14161b;
+    --ink-2: #2b2e36;
+    --muted: #6f6c63;
+    --line: rgba(20, 22, 27, .09);
+    --card: rgba(255, 255, 255, .55);
+    --card-solid: #fffdf8;
+    --accent: #0d7d71;
+    --accent-soft: rgba(13, 125, 113, .1);
+    --accent-2: #e0654a;
+    --accent-3: #c8a24a;
+    --grad: linear-gradient(120deg, #0d7d71 0%, #14a08c 45%, #e0654a 110%);
+    --radius: 18px;
+    --max: 1180px;
+    --font: "Sora", "Noto Sans SC", ui-sans-serif, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    --serif: "Noto Serif SC", "Songti SC", serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    line-height: 1.72;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+  ::selection { background: rgba(13, 125, 113, .22); }
+  .wrap { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; }
+
+  /* ---------- ambient background ---------- */
+  .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; background: linear-gradient(180deg, #f8f6f0 0%, #f3f0e7 60%, #f6f4ee 100%); }
+  .aurora .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .5; will-change: transform; }
+  .aurora .b1 { width: 46vw; height: 46vw; left: -12vw; top: -14vw; background: radial-gradient(circle, rgba(13,125,113,.34), transparent 65%); animation: drift1 26s ease-in-out infinite alternate; }
+  .aurora .b2 { width: 40vw; height: 40vw; right: -14vw; top: 6vh; background: radial-gradient(circle, rgba(224,101,74,.3), transparent 65%); animation: drift2 32s ease-in-out infinite alternate; }
+  .aurora .b3 { width: 34vw; height: 34vw; left: 28vw; top: 62vh; background: radial-gradient(circle, rgba(200,162,74,.24), transparent 65%); animation: drift3 38s ease-in-out infinite alternate; }
+  @keyframes drift1 { to { transform: translate(9vw, 7vh) scale(1.12); } }
+  @keyframes drift2 { to { transform: translate(-8vw, 12vh) scale(.92); } }
+  @keyframes drift3 { to { transform: translate(-10vw, -9vh) scale(1.08); } }
+  .grain { position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: .5; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* ---------- cursor glow ---------- */
+  .cursor-glow { position: fixed; left: 0; top: 0; width: 340px; height: 340px; margin: -170px 0 0 -170px; border-radius: 50%; pointer-events: none; z-index: 1; background: radial-gradient(circle, rgba(13,125,113,.1), rgba(224,101,74,.05) 45%, transparent 68%); opacity: 0; transition: opacity .5s ease; will-change: transform; }
+  body.has-cursor .cursor-glow { opacity: 1; }
+  @media (hover: none), (max-width: 960px) { .cursor-glow { display: none; } }
+
+  /* ---------- progress ---------- */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--grad); z-index: 90; border-radius: 0 3px 3px 0; }
+
+  /* ---------- nav ---------- */
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 80; transition: background .35s ease, box-shadow .35s ease, border-color .35s ease; border-bottom: 1px solid transparent; }
+  .nav.scrolled { background: rgba(246, 244, 238, .78); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); border-bottom-color: var(--line); box-shadow: 0 12px 40px rgba(20,22,27,.05); }
+  .nav-inner { height: 74px; display: flex; align-items: center; gap: 18px; }
+  .brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -.01em; }
+  .brand-mark { width: 38px; height: 38px; border-radius: 12px; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 13px; font-weight: 800; letter-spacing: .02em; position: relative; overflow: hidden; transition: transform .3s ease; }
+  .brand-mark::after { content: ""; position: absolute; inset: 0; background: var(--grad); opacity: 0; transition: opacity .3s ease; }
+  .brand-mark span { position: relative; z-index: 1; }
+  .brand:hover .brand-mark { transform: rotate(-6deg) scale(1.05); }
+  .brand:hover .brand-mark::after { opacity: 1; }
+
+  .lang-toggle { display: inline-flex; align-items: center; position: relative; border: 1px solid var(--line); background: rgba(255,255,255,.6); border-radius: 999px; padding: 3px; cursor: pointer; user-select: none; transition: border-color .25s ease, box-shadow .25s ease; }
+  .lang-toggle:hover { border-color: rgba(13,125,113,.45); box-shadow: 0 4px 16px rgba(13,125,113,.12); }
+  .lang-toggle .opt { position: relative; z-index: 1; padding: 4px 12px; font-size: 12px; font-weight: 700; color: var(--muted); transition: color .3s ease; letter-spacing: .02em; }
+  .lang-toggle .opt.active { color: #fff; }
+  .lang-toggle .slider { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); border-radius: 999px; background: var(--ink); transition: transform .35s cubic-bezier(.6,.05,.2,1.2); }
+  .lang-toggle.en .slider { transform: translateX(100%); }
+
+  .nav-links { display: flex; gap: 26px; list-style: none; color: var(--muted); font-size: 13px; font-weight: 600; margin-left: auto; }
+  .nav-links a { position: relative; padding: 8px 0; transition: color .25s ease; }
+  .nav-links a::after { content: ""; position: absolute; left: 0; bottom: 2px; width: 100%; height: 2px; border-radius: 2px; background: var(--grad); transform: scaleX(0); transform-origin: right; transition: transform .3s ease; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+  @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(13,125,113,.4); } 50% { box-shadow: 0 0 0 6px rgba(13,125,113,0); } }
+
+  /* ---------- hero ---------- */
+  .hero { min-height: 100vh; padding: 150px 0 90px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: clamp(48px, 7vw, 110px); align-items: center; position: relative; }
+  .eyebrow { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+  .eyebrow span { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; padding: 5px 14px; border-radius: 999px; background: rgba(255,255,255,.66); border: 1px solid rgba(20,22,27,.06); color: var(--accent); font-size: 13px; font-weight: 700; white-space: nowrap; backdrop-filter: blur(6px); animation: fadeUp .8s cubic-bezier(.22,.61,.36,1) both; }
+  .eyebrow span:nth-child(2) { animation-delay: .08s; color: var(--accent-2); }
+  .eyebrow span:nth-child(3) { animation-delay: .16s; color: var(--ink-2); }
+  .eyebrow span:nth-child(4) { animation-delay: .24s; }
+  .eyebrow span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  h1.hero-name { font-size: clamp(72px, 12vw, 160px); line-height: .92; letter-spacing: -.045em; font-weight: 800; margin-bottom: 30px; }
+  h1.hero-name .ch { display: inline-block; opacity: 0; transform: translateY(.55em) rotate(4deg); animation: chIn .9s cubic-bezier(.2,.7,.2,1.05) forwards; }
+  @keyframes chIn { to { opacity: 1; transform: translateY(0) rotate(0); } }
+  h1.hero-name .latin { font-family: "Sora", sans-serif; background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  h1.hero-name .zh { font-family: var(--serif); font-weight: 900; }
+
+  .hero-title { max-width: 840px; font-size: clamp(23px, 3.2vw, 42px); line-height: 1.22; letter-spacing: -.028em; font-weight: 700; animation: fadeUp .9s cubic-bezier(.22,.61,.36,1) .35s both; }
+  .hero-title em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-copy { max-width: 700px; color: var(--muted); margin-top: 26px; font-size: 16px; animation: fadeUp .9s cubic-bezier(.22,.61,.36,1) .5s both; }
+  .hero-copy strong { color: var(--ink); font-weight: 700; }
+
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 38px; animation: fadeUp .9s cubic-bezier(.22,.61,.36,1) .62s both; }
+  .btn { position: relative; display: inline-flex; align-items: center; gap: 9px; min-height: 48px; padding: 10px 22px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.6); cursor: pointer; font-size: 14px; font-weight: 700; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease; will-change: transform; backdrop-filter: blur(6px); }
+  .btn:hover { transform: translateY(-3px); border-color: rgba(20,22,27,.3); box-shadow: 0 14px 34px rgba(20,22,27,.1); background: rgba(255,255,255,.9); }
+  .btn.dark { background: var(--ink); color: #fff; border-color: var(--ink); overflow: hidden; }
+  .btn.dark::before { content: ""; position: absolute; inset: 0; background: var(--grad); opacity: 0; transition: opacity .3s ease; }
+  .btn.dark span, .btn.dark svg { position: relative; z-index: 1; }
+  .btn.dark:hover { box-shadow: 0 16px 40px rgba(13,125,113,.3); border-color: transparent; }
+  .btn.dark:hover::before { opacity: 1; }
+  .btn svg { width: 15px; height: 15px; }
+
+  .hero-keywords { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 52px; max-width: 760px; animation: fadeUp .9s cubic-bezier(.22,.61,.36,1) .74s both; }
+  .hero-keywords span { display: inline-flex; align-items: center; gap: 9px; padding: 12px 20px; border-radius: 16px; background: rgba(255,255,255,.55); border: 1px solid rgba(20,22,27,.07); backdrop-filter: blur(8px); font-size: 14px; font-weight: 700; color: var(--ink-2); transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; cursor: default; }
+  .hero-keywords span::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--grad); flex: 0 0 auto; }
+  .hero-keywords span:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(20,22,27,.1); border-color: rgba(13,125,113,.3); }
+
+  .story-cue { position: absolute; left: 0; bottom: 34px; display: inline-flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 600; }
+  .story-cue span { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; animation: cueBounce 1.8s ease-in-out infinite; background: rgba(255,255,255,.6); }
+  @keyframes cueBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+
+  .profile-card { justify-self: end; width: min(100%, 300px); animation: fadeUp 1s cubic-bezier(.22,.61,.36,1) .45s both; }
+  .portrait { position: relative; width: 100%; aspect-ratio: 4 / 5; border-radius: 22px; overflow: hidden; background: #ddd; transform: rotate(1.5deg); transition: transform .5s cubic-bezier(.22,.61,.36,1), box-shadow .5s ease; box-shadow: 0 30px 70px rgba(20,22,27,.14); }
+  .portrait::after { content: ""; position: absolute; inset: 0; border-radius: 22px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); pointer-events: none; }
+  .portrait:hover { transform: rotate(0deg) translateY(-6px) scale(1.015); box-shadow: 0 44px 90px rgba(20,22,27,.2); }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(.95) contrast(1.04); }
+  .profile-meta { margin-top: 24px; display: grid; gap: 10px; color: var(--muted); font-size: 14px; }
+  .profile-meta b { color: var(--ink); font-weight: 700; }
+
+  /* ---------- marquee ---------- */
+  .marquee { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 18px 0; overflow: hidden; position: relative; background: rgba(255,255,255,.32); backdrop-filter: blur(6px); }
+  .marquee-track { display: flex; gap: 44px; width: max-content; animation: marquee 30s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .marquee-track span { display: inline-flex; align-items: center; gap: 44px; color: var(--muted); font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+  .marquee-track span::after { content: "✦"; color: var(--accent-2); font-size: 12px; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* ---------- sections ---------- */
+  .section { padding: 120px 0; border-top: 1px solid var(--line); position: relative; }
+  .section-head { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: clamp(28px, 6vw, 86px); margin-bottom: 60px; }
+  .section-index { color: var(--muted); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+  .section-index::after { content: ""; display: block; width: 42px; height: 2px; margin-top: 14px; background: var(--grad); border-radius: 2px; }
+  h2 { font-size: clamp(36px, 5vw, 66px); line-height: 1.02; letter-spacing: -.04em; font-weight: 800; }
+  .section-note { max-width: 680px; color: var(--muted); margin-top: 18px; }
+
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity .9s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal.d1 { transition-delay: .08s; } .reveal.d2 { transition-delay: .16s; } .reveal.d3 { transition-delay: .24s; } .reveal.d4 { transition-delay: .32s; }
+
+  /* ---------- education ---------- */
+  .edu-timeline { position: relative; display: grid; gap: 0; padding-left: 38px; }
+  .edu-timeline::before { content: ""; position: absolute; left: 10px; top: 14px; bottom: 14px; width: 2px; background: linear-gradient(var(--accent), var(--accent-2)); border-radius: 2px; opacity: .5; }
+  .edu-node { position: relative; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: clamp(28px, 6vw, 86px); padding: 0 0 56px; }
+  .edu-node:last-child { padding-bottom: 0; }
+  .edu-node::before { content: ""; position: absolute; left: -38px; top: 10px; width: 20px; height: 20px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); box-shadow: 0 0 0 9px rgba(13,125,113,.08); transform: scale(.8); transition: transform .6s ease, background .6s ease; }
+  .edu-node.in::before { transform: scale(1); background: var(--accent); }
+  .edu-year { color: var(--muted); font-size: 14px; font-weight: 600; }
+  .edu-year b { display: block; color: var(--ink); font-size: 30px; line-height: 1; letter-spacing: -.04em; margin-bottom: 8px; font-weight: 800; }
+  .edu-card { padding: 30px; border: 1px solid rgba(20,22,27,.06); border-radius: 20px; background: var(--card); box-shadow: 0 20px 54px rgba(20,22,27,.05); backdrop-filter: blur(8px); transition: transform .3s ease, box-shadow .3s ease, background .3s ease; }
+  .edu-card:hover { transform: translateY(-6px); background: rgba(255,255,255,.85); box-shadow: 0 30px 70px rgba(20,22,27,.1); }
+  .edu-card .desc { margin-top: 16px; }
+  .edu-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .edu-tags span { border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; color: var(--muted); font-size: 12px; font-weight: 600; background: rgba(255,255,255,.5); }
+
+  h3 { font-size: clamp(22px, 3vw, 32px); line-height: 1.2; letter-spacing: -.025em; font-weight: 750; }
+  .sub { color: var(--accent-2); margin-top: 6px; font-weight: 650; font-size: 15px; }
+  .desc { color: var(--muted); margin-top: 14px; max-width: 800px; }
+  .list { list-style: none; display: grid; gap: 12px; margin-top: 18px; max-width: 880px; }
+  .list li { position: relative; padding-left: 20px; color: #3c3d3a; }
+  .list li::before { content: ""; position: absolute; left: 0; top: .72em; width: 7px; height: 7px; border-radius: 50%; background: var(--grad); }
+  .list strong { font-weight: 750; color: var(--ink); }
+
+  /* ---------- skills ---------- */
+  .skills-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .skill { position: relative; min-height: 264px; padding: 26px; border: 1px solid rgba(20,22,27,.06); border-radius: 20px; background: var(--card); box-shadow: 0 20px 54px rgba(20,22,27,.05); backdrop-filter: blur(8px); overflow: hidden; transition: transform .3s ease, box-shadow .3s ease; transform-style: preserve-3d; }
+  .skill::before { content: ""; position: absolute; inset: 0; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(13,125,113,.12), transparent 45%); opacity: 0; transition: opacity .35s ease; pointer-events: none; }
+  .skill:hover::before { opacity: 1; }
+  .skill:hover { box-shadow: 0 32px 70px rgba(20,22,27,.11); }
+  .skill::after { content: ""; position: absolute; inset: auto 22px 18px 22px; height: 2px; border-radius: 2px; background: var(--grad); transform: scaleX(0); transform-origin: left; transition: transform .7s ease; }
+  .skill.in::after { transform: scaleX(1); }
+  .skill-num { color: var(--accent); font-size: 13px; letter-spacing: .1em; margin-bottom: 30px; font-weight: 800; }
+  .skill h3 { font-size: 21px; }
+  .skill p { color: var(--muted); margin-top: 14px; font-size: 14px; }
+
+  /* ---------- experience ---------- */
+  .exp-list { display: grid; gap: 26px; }
+  .exp-card { position: relative; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); padding: 40px; border: 1px solid rgba(20,22,27,.07); border-radius: 24px; background: var(--card); backdrop-filter: blur(8px); box-shadow: 0 20px 54px rgba(20,22,27,.05); overflow: hidden; transition: transform .3s ease, box-shadow .3s ease; }
+  .exp-card:hover { transform: translateY(-5px); box-shadow: 0 34px 80px rgba(20,22,27,.11); }
+  .exp-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--grad); opacity: 0; transition: opacity .3s ease; }
+  .exp-card:hover::before { opacity: 1; }
+  .exp-card.featured { background: linear-gradient(150deg, rgba(13,125,113,.09), rgba(255,255,255,.72) 42%, rgba(224,101,74,.07)); border-color: rgba(13,125,113,.22); }
+  .exp-card.featured::before { opacity: 1; }
+  .exp-date { color: var(--muted); font-size: 14px; font-weight: 650; line-height: 1.5; }
+  .exp-date .now-pill { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; padding: 5px 12px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 11.5px; font-weight: 700; letter-spacing: .03em; }
+  .exp-date .now-pill i { width: 6px; height: 6px; border-radius: 50%; background: #37d9c2; animation: pulse 1.8s ease-in-out infinite; }
+  .exp-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  .exp-logo { flex: 0 0 auto; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-weight: 800; font-size: 15px; color: #fff; background: var(--ink); box-shadow: 0 10px 26px rgba(20,22,27,.18); }
+  .exp-logo.bytedance { background: linear-gradient(135deg, #325ab4, #4c8dff); }
+  .exp-logo.luze { background: linear-gradient(135deg, #0d7d71, #14a08c); }
+  .exp-logo.cftc { background: linear-gradient(135deg, #b4502f, #e0654a); }
+
+  /* ---------- projects ---------- */
+  .project-list { display: grid; gap: 26px; }
+  .project-card { position: relative; display: grid; grid-template-columns: minmax(280px, .9fr) minmax(0, 1.1fr); gap: clamp(30px, 5vw, 64px); padding: 44px; border: 1px solid rgba(20,22,27,.07); border-radius: 26px; background: var(--card); backdrop-filter: blur(8px); box-shadow: 0 20px 54px rgba(20,22,27,.05); align-items: center; overflow: hidden; transition: transform .3s ease, box-shadow .3s ease; }
+  .project-card:hover { transform: translateY(-5px); box-shadow: 0 36px 84px rgba(20,22,27,.11); }
+  .project-card::before { content: attr(data-step); position: absolute; right: 26px; top: 18px; color: rgba(20,22,27,.07); font-size: 84px; line-height: 1; font-weight: 800; letter-spacing: -.05em; font-family: "Sora", sans-serif; }
+  .project-time { display: inline-flex; margin-bottom: 16px; color: var(--accent); font-size: 13px; font-weight: 750; letter-spacing: .03em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .chip { border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; color: var(--muted); font-size: 12px; font-weight: 650; background: rgba(255,255,255,.5); }
+  .result { margin-top: 20px; color: var(--ink); font-weight: 700; }
+  .project-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .project-link { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; word-break: break-all; transition: color .25s ease; }
+  .project-link:hover { color: var(--accent-2); }
+  .project-media { border: 0; cursor: zoom-in; text-align: left; margin: 0; border-radius: 22px; overflow: hidden; background: radial-gradient(circle at 18% 12%, rgba(13,125,113,.12), transparent 34%), linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.4)); box-shadow: 0 30px 80px rgba(20,22,27,.12); transform: rotate(.6deg); transition: transform .35s ease, box-shadow .35s ease; width: 100%; padding: 0; }
+  .project-media:hover { transform: rotate(0deg) translateY(-6px); box-shadow: 0 44px 100px rgba(20,22,27,.17); }
+  .project-media img { width: 100%; display: block; height: auto; max-height: 460px; object-fit: contain; object-position: center; padding: clamp(14px, 2.4vw, 30px); }
+
+  /* ---------- academic ---------- */
+  .academic-list { display: grid; gap: 22px; }
+  .academic-card { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); padding: 34px 38px; border: 1px solid rgba(20,22,27,.06); border-radius: 22px; background: var(--card); backdrop-filter: blur(8px); box-shadow: 0 18px 48px rgba(20,22,27,.045); transition: transform .3s ease, box-shadow .3s ease; }
+  .academic-card:hover { transform: translateY(-4px); box-shadow: 0 28px 64px rgba(20,22,27,.09); }
+  .academic-type { color: var(--accent); font-size: 13px; font-weight: 750; margin-bottom: 12px; }
+  .academic-card h3 a { color: inherit; text-decoration: underline; text-decoration-color: rgba(13,125,113,.4); text-underline-offset: 5px; transition: color .25s ease, text-decoration-color .25s ease; }
+  .academic-card h3 a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+  .date { color: var(--muted); font-size: 14px; font-weight: 650; }
+
+  /* ---------- honors carousel ---------- */
+  .honor-carousel { --card-width: min(58vw, 520px); --card-height: 360px; --side-offset: min(28vw, 300px); --side-scale: .78; --transition-speed: .4s; position: relative; width: min(100%, 1060px); height: calc(var(--card-height) + 96px); margin: 8px auto 0; overflow: visible; }
+  .honor-slide { position: absolute; left: 50%; top: calc(var(--card-height) / 2 + 12px); width: var(--card-width); height: var(--card-height); display: flex; flex-direction: column; border: 1px solid rgba(20,22,27,.07); border-radius: 22px; overflow: hidden; padding: 0; background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(248,247,242,.78)); box-shadow: 0 24px 70px rgba(20,22,27,.08); cursor: pointer; text-align: left; opacity: 0; pointer-events: none; transform: translate(-50%, -50%) scale(.68); transition: transform var(--transition-speed) cubic-bezier(.22,.61,.36,1), opacity var(--transition-speed) cubic-bezier(.22,.61,.36,1), box-shadow var(--transition-speed) ease, filter var(--transition-speed) ease; will-change: transform, opacity; }
+  .honor-carousel.is-settling .honor-slide { transition: none; }
+  .honor-slide::after { content: attr(data-zoom); position: absolute; right: 14px; top: 14px; z-index: 4; padding: 5px 10px; border-radius: 999px; background: rgba(248,247,242,.9); color: var(--muted); font-size: 12px; opacity: 0; transform: translateY(-6px); transition: opacity .25s ease, transform .25s ease; }
+  .honor-slide:hover::after { opacity: 1; transform: translateY(0); }
+  .honor-slide.is-active { z-index: 5; opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); box-shadow: 0 34px 92px rgba(20,22,27,.15); filter: saturate(1); }
+  .honor-slide.is-prev { z-index: 3; opacity: .82; pointer-events: auto; transform: translate(calc(-50% - var(--side-offset)), -50%) scale(var(--side-scale)); filter: saturate(.9); }
+  .honor-slide.is-next { z-index: 3; opacity: .82; pointer-events: auto; transform: translate(calc(-50% + var(--side-offset)), -50%) scale(var(--side-scale)); filter: saturate(.9); }
+  .honor-slide.is-before-prev { z-index: 1; opacity: 0; pointer-events: none; transform: translate(calc(-50% - var(--side-offset) * 1.62), -50%) scale(.62); }
+  .honor-slide.is-after-next { z-index: 1; opacity: 0; pointer-events: none; transform: translate(calc(-50% + var(--side-offset) * 1.62), -50%) scale(.62); }
+  .honor-slide img { width: 100%; flex: 1; min-height: 0; object-fit: contain; display: block; background: #fff; padding: clamp(14px, 2vw, 26px); }
+  .honor-body { flex: 0 0 auto; padding: 18px 20px 20px; background: rgba(255,255,255,.9); border-top: 1px solid rgba(20,22,27,.06); }
+  .honor-body b { display: block; line-height: 1.35; font-weight: 700; }
+  .honor-body span { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; }
+  .honor-text { margin-top: 26px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .honor-note { padding: 24px; border: 1px solid rgba(20,22,27,.06); border-radius: 18px; background: var(--card); backdrop-filter: blur(8px); box-shadow: 0 18px 50px rgba(20,22,27,.045); transition: transform .3s ease; }
+  .honor-note:hover { transform: translateY(-4px); }
+  .honor-note b { display: block; margin-bottom: 8px; font-weight: 750; }
+  .honor-note span { color: var(--muted); font-size: 14px; }
+
+  /* ---------- contact / footer ---------- */
+  .contact { position: relative; padding: 130px 0 60px; background: #101216; color: #f2f0ea; overflow: hidden; }
+  .contact::before { content: ""; position: absolute; width: 60vw; height: 60vw; left: -20vw; top: -30vw; border-radius: 50%; background: radial-gradient(circle, rgba(13,125,113,.28), transparent 62%); filter: blur(60px); }
+  .contact::after { content: ""; position: absolute; width: 46vw; height: 46vw; right: -16vw; bottom: -24vw; border-radius: 50%; background: radial-gradient(circle, rgba(224,101,74,.22), transparent 62%); filter: blur(60px); }
+  .contact .wrap { position: relative; z-index: 1; }
+  .contact h2 { font-size: clamp(44px, 7vw, 96px); letter-spacing: -.045em; }
+  .contact h2 em { font-style: normal; background: linear-gradient(120deg, #37d9c2, #e0654a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .contact-sub { color: rgba(242,240,234,.62); margin-top: 20px; max-width: 560px; font-size: 16px; }
+  .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 64px; }
+  .contact-item { padding: 26px; border: 1px solid rgba(255,255,255,.1); border-radius: 18px; background: rgba(255,255,255,.04); transition: transform .3s ease, background .3s ease, border-color .3s ease; }
+  .contact-item:hover { transform: translateY(-4px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.2); }
+  .contact-item span { display: block; color: rgba(242,240,234,.5); font-size: 13px; font-weight: 650; margin-bottom: 10px; letter-spacing: .06em; text-transform: uppercase; }
+  .contact-item b { font-size: clamp(17px, 1.8vw, 22px); line-height: 1.25; font-weight: 700; word-break: break-all; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 90px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,.1); color: rgba(242,240,234,.45); font-size: 13px; }
+
+  /* ---------- lightbox ---------- */
+  .lightbox { position: fixed; inset: 0; z-index: 100; background: rgba(12,12,11,.86); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 28px; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: min(980px, 94vw); max-height: 86vh; border-radius: 14px; box-shadow: 0 30px 90px rgba(0,0,0,.4); }
+  .lightbox button { position: fixed; top: 22px; right: 22px; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.12); color: #fff; border-radius: 50%; cursor: pointer; font-size: 18px; transition: background .25s ease; }
+  .lightbox button:hover { background: rgba(255,255,255,.24); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1024px) {
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 960px) {
+    .hero, .section-head, .exp-card, .project-card, .academic-card, .edu-node { grid-template-columns: 1fr; }
+    .profile-card { max-width: 260px; justify-self: start; }
+    .hero { padding-top: 130px; gap: 44px; }
+    .story-cue { position: static; margin-top: 48px; }
+    .honor-carousel { --card-width: min(66vw, 480px); --card-height: 340px; --side-offset: min(27vw, 240px); --side-scale: .76; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .exp-card, .project-card { padding: 30px 24px; }
+  }
+  @media (max-width: 680px) {
+    .wrap { width: min(100% - 30px, var(--max)); }
+    .nav-links { display: none; }
+    .nav-cta { display: none; }
+    .nav-inner { gap: 12px; }
+    .hero { padding-top: 116px; }
+    .section { padding: 80px 0; }
+    .skills-grid, .honor-text { grid-template-columns: 1fr; }
+    .honor-carousel { --card-width: min(70vw, 300px); --card-height: 300px; --side-offset: min(24vw, 112px); --side-scale: .66; height: calc(var(--card-height) + 86px); }
+    .project-media img { max-height: none; padding: 12px; }
+    .edu-timeline { padding-left: 28px; }
+    .edu-node::before { left: -28px; }
+    .hero-keywords span { padding: 10px 16px; font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+  /* V1: hidden modules must stay hidden despite grid/flex rules. */
+  [hidden] { display: none !important; }
+  .story-cue i { font-style: normal; }
+  h1.hero-name { overflow-wrap: anywhere; }
+  .contact-item span > span { display: inline; margin: 0; }
+  .contact-item span svg { width: 16px; height: 16px; vertical-align: -3px; margin-right: 8px; }
+  @media (max-width: 680px) { .honor-carousel { overflow: clip; } }
+</style>
+</head>
+
+<body>
+<div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="grain"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="progress" id="progress"></div>
+
+<nav class="nav" id="nav"><div class="wrap nav-inner"><a class="brand" href="#top"><span class="brand-mark"><span>PZ</span></span><span data-i18n="brand">朱利锋</span></a><button class="lang-toggle" id="langToggle" type="button" aria-label="切换语言 / Switch language"><span class="slider"></span><span class="opt active" data-lang="zh">中</span><span class="opt" data-lang="en">EN</span></button><ul class="nav-links"><li><a href="#education"><span data-i18n="nav.education">学历</span></a></li><li><a href="#skills"><span data-i18n="nav.skills">技能</span></a></li><li><a href="#experience"><span data-i18n="nav.experience">经历</span></a></li><li><a href="#projects"><span data-i18n="nav.projects">项目</span></a></li><li><a href="#honors"><span data-i18n="nav.honors">荣誉</span></a></li></ul><!-- TODO: Academic 导航待有真实资料后恢复。 --></div></nav><main id="top" class="wrap"><header class="hero"><div class="hero-main"><div class="eyebrow"><span data-i18n="hero.tag0">AI Agent</span><span data-i18n="hero.tag1">Codex</span><span data-i18n="hero.tag2">AI Workflow</span><span data-i18n="hero.tag3">AI Video</span><span data-i18n="hero.tag4">Vibe Coding</span></div><h1 class="hero-name" id="heroName" data-i18n-name>朱利锋</h1><p data-i18n-html="hero.title" class="hero-title">数字媒体艺术背景，专注 <em>AI 应用、Agent 与自动化工作流</em>。</p><p data-i18n="hero.copy" class="hero-copy">结合内容创作经验，实践 AI 视频与 Agent 项目，让需求从方案走向交付。</p><div class="hero-actions"><a class="btn dark magnetic" href="./assets/resume.pdf" download="朱利锋-简历.pdf"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M5 16v4h14v-4"/></svg><span data-i18n="hero.resume">下载简历</span></a><a class="btn magnetic" href="mailto:pigerzhu956@gmail.com"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7L22 6"/></svg><span>pigerzhu956@gmail.com</span></a><a class="btn magnetic" href="tel:15939208673"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>15939208673</span></a></div><div class="hero-keywords"><span data-i18n="kw0">AI 工具与 Agent 实践</span><span data-i18n="kw1">内容生产与项目落地</span><span data-i18n="kw2">需求拆解与快速学习</span><span data-i18n="kw3">沟通协作与持续交付</span></div><a class="story-cue" href="#education"><span>↓</span><i data-i18n="hero.cue">向下滚动，开始了解我</i></a></div><aside class="profile-card"><div class="portrait"><img src="./assets/avatar.png" alt="朱利锋头像" id="portraitImg" width="300" height="375"></div><div class="profile-meta"><div><b data-i18n="meta0.k">城市</b><span data-i18n="meta0.v"> · 杭州</span></div><div><b data-i18n="meta1.k">背景</b><span data-i18n="meta1.v"> · 数字媒体艺术</span></div><div><b data-i18n="meta2.k">方向</b><span data-i18n="meta2.v"> · AI 应用 / Agent / AI 工作流</span></div></div></aside></header></main><div class="marquee" aria-hidden="true"><div class="marquee-track" id="marqueeTrack"></div></div><main class="wrap"><section class="section" id="education"><div class="section-head reveal"><div data-i18n="education.index" class="section-index">01 / Education</div><div><h2 data-i18n="education.title">学历背景</h2><p data-i18n="education.note" class="section-note">数字媒体艺术本科背景，将摄影摄像、影视后期、视觉设计与分镜创作延伸到 AI 视频、Agent 与自动化工作流实践。</p></div></div><div class="edu-timeline"><article class="edu-node reveal"><div class="edu-year"><b>2021</b><span data-i18n="edu.period">2021.09 — 2025.06</span><br><span data-i18n="edu.degree">本科</span></div><div class="edu-card"><h3 data-i18n="edu.school">湖南工程学院</h3><div data-i18n="edu.major" class="sub">数字媒体艺术 · 本科</div><p data-i18n="edu.desc" class="desc">系统接触摄影摄像、影视后期、视觉设计与分镜创作，并逐步将原有内容生产能力延伸到 AI 视频、Agent 与自动化工作流实践。</p><div class="edu-tags"><span data-i18n="edu.tag0">摄影与摄像</span><span data-i18n="edu.tag1">影视后期制作</span><span data-i18n="edu.tag2">视觉设计</span><span data-i18n="edu.tag3">广告创意与设计</span><span data-i18n="edu.tag4">剧本创作与分镜头</span></div></div></article></div><!-- TODO: 仅展示已提供的本科经历；不保留原作者学历展示。 --></section><section class="section" id="skills"><div class="section-head reveal"><div data-i18n="skills.index" class="section-index">02 / Skills</div><div><h2 data-i18n="skills.title">核心技能</h2><p data-i18n="skills.note" class="section-note">围绕 AI 工具、Agent 工作流与内容制作，连接需求拆解、执行交付和持续迭代。</p></div></div><div class="skills-grid"><article class="skill reveal tilt d0"><div class="skill-num">01</div><h3 data-i18n="sk0.t">AI 工具</h3><p data-i18n="sk0.p">ChatGPT / Codex / OpenClaw / Claude / Midjourney</p></article><article class="skill reveal tilt d1"><div class="skill-num">02</div><h3 data-i18n="sk1.t">Agent 与工作流</h3><p data-i18n="sk1.p">Agent、Prompt 工程、自动化工作流、API 调用、数据解析；持续实践需求拆解与快速学习。</p></article><article class="skill reveal tilt d2"><div class="skill-num">03</div><h3 data-i18n="sk2.t">内容制作</h3><p data-i18n="sk2.p">Premiere Pro / DaVinci Resolve / After Effects / Photoshop / 剪映；脚本撰写、分镜策划、拍摄执行、剪辑调色与文案撰写。</p></article><article class="skill reveal tilt d3"><div class="skill-num">04</div><h3 data-i18n="sk3.t">办公与协作</h3><p data-i18n="sk3.p">Excel / Word / PowerPoint / 飞书 / Notion；沟通协作、项目执行与持续交付。</p></article></div></section><section class="section" id="experience"><div class="section-head reveal"><div data-i18n="experience.index" class="section-index">03 / Experience</div><div><h2 data-i18n="experience.title">相关经历</h2><p data-i18n="experience.note" class="section-note">从视频内容生产到 AI 生成内容质量评测，积累需求理解、执行交付与反馈迭代经验。</p></div></div><div class="exp-list"><article class="exp-card featured reveal d0"><div class="exp-date"><!-- TODO: 已确认入职；正确入职年月待补，不展示原错误日期。 --><span class="now-pill"><i></i><span data-i18n="exp.current">已入职 · 当前工作</span></span></div><div><div class="exp-head"><div><h3 data-i18n="exp0.company">杭州凌岳数科科技</h3><div data-i18n="exp0.role" class="sub">AI 大模型训练师 / 视频 RFT</div></div><div class="exp-logo">AI</div></div><ul class="list"><li data-i18n="exp0.l0">按照项目标准对 AI 生成内容进行质量评测与标注。</li><li data-i18n="exp0.l1">识别运动质量、美感、指令遵循等问题，完成问题分类、问题描述与优化建议。</li><li data-i18n="exp0.l2">为模型训练、评估与迭代提供高质量数据反馈。</li></ul></div></article><article class="exp-card  reveal d1"><div class="exp-date"><span data-i18n="exp1.date">2026.03 — 2026.08</span></div><div><div class="exp-head"><div><h3 data-i18n="exp1.company">中轩传媒文化有限公司</h3><div data-i18n="exp1.role" class="sub">短视频内容生产</div></div><div class="exp-logo">ZX</div></div><ul class="list"><li data-i18n="exp1.l0">负责多个内容账号的短视频生产，独立完成从需求理解、内容制作到成片交付的完整流程。</li><li data-i18n="exp1.l1">累计交付 100+ 视频，积累内容流程拆解、项目执行与持续交付经验。</li></ul></div></article><article class="exp-card  reveal d2"><div class="exp-date"><span data-i18n="exp2.date">2025</span></div><div><div class="exp-head"><div><h3 data-i18n="exp2.company">凤凰古城文旅局宣传视频</h3><div data-i18n="exp2.role" class="sub">文旅宣传项目</div></div><div class="exp-logo">FH</div></div><ul class="list"><li data-i18n="exp2.l0">参与凤凰古城文旅官方宣传项目。</li><li data-i18n="exp2.l1">围绕传播需求完成素材采集、内容制作与成片交付，积累真实业务场景下的内容理解与项目落地经验。</li></ul></div></article></div></section><section class="section" id="projects"><div class="section-head reveal"><div data-i18n="projects.index" class="section-index">04 / Projects</div><div><h2 data-i18n="projects.title">AI 实践项目</h2><p data-i18n="projects.note" class="section-note">围绕真实需求构建 AI 视频生产流程与求职匹配 Agent，持续实践并迭代。</p></div></div><div class="project-list"><article class="project-card reveal d0" data-step="01"><div><div data-i18n="p0.time" class="project-time">2026.05 — 至今 · 持续更新中</div><h3 data-i18n="p0.name">AI 自动化视频</h3><p data-i18n="p0.desc" class="desc">规划并搭建 AI 自动化视频生产流程，持续尝试提升视频生产效率与流程标准化。</p><div class="chips"><span data-i18n="p0.tag0" class="chip">ChatGPT</span><span data-i18n="p0.tag1" class="chip">Codex</span><span data-i18n="p0.tag2" class="chip">Remotion</span><span data-i18n="p0.tag3" class="chip">剪映</span><span data-i18n="p0.tag4" class="chip">可灵 AI</span><span data-i18n="p0.tag5" class="chip">Sora</span><span data-i18n="p0.tag6" class="chip">TTS</span></div><!-- TODO: 待提供真实 Demo、项目仓库与截图后恢复媒体和项目链接。 --></div><div><ul class="list"><li data-i18n="p0.l0">完成从需求判断、脚本分镜到配音、字幕、渲染及 QA 审阅的完整闭环。</li><li data-i18n="p0.l1">持续尝试将 AI 工具用于视频生产效率提升与流程标准化。</li></ul><div data-i18n="p0.result" class="result">价值：提升内容生产效率，降低视频制作门槛。</div></div></article><article class="project-card reveal d1" data-step="02"><div><div data-i18n="p1.time" class="project-time">2026.05 — 至今 · 持续更新中</div><h3 data-i18n="p1.name">AI 求职匹配 Agent</h3><p data-i18n="p1.desc" class="desc">基于 Codex 与开源 Skill 搭建 AI 求职 Agent，辅助求职决策与简历优化。</p><div class="chips"><span data-i18n="p1.tag0" class="chip">Codex</span><span data-i18n="p1.tag2" class="chip">ChatGPT</span><span data-i18n="p1.tag3" class="chip">正则</span><span data-i18n="p1.tag4" class="chip">表格存储</span></div><!-- TODO: 待提供真实 Demo、项目仓库与截图后恢复媒体和项目链接。 --></div><div><ul class="list"><li data-i18n="p1.l0">自动解析岗位 JD，评估简历匹配度并提取高频技能。</li><li data-i18n="p1.l1">生成针对性优化建议与岗位归档。</li></ul><div data-i18n="p1.result" class="result">价值：辅助求职决策，提升简历优化与岗位匹配效率。</div></div></article></div><!-- TODO: 原作者复杂案例不作为本人项目展示。 --></section><!-- TODO: Academic 无对应个人资料，保留模块结构、样式与交互挂点，补充后恢复。 --><section class="section" id="academic" hidden><div class="academic-list"></div></section><section class="section" id="honors"><div class="section-head reveal"><div data-i18n="honors.index" class="section-index">05 / Honors</div><div><h2 data-i18n="honors.title">荣誉奖项</h2><p data-i18n="honors.note" class="section-note">数字媒体艺术与创意设计相关奖项，点击证书可查看大图。</p></div></div><div class="honor-carousel reveal" data-carousel aria-label="荣誉奖项证书轮播 / Award certificates"><button class="honor honor-slide" type="button" data-image="cert0" data-zoom="点击查看"><img src="./assets/honors/national-first-2024.jpg" alt="2024 · 国家级一等奖 · 数字摄影类 · 《瓷·城》获奖证书" loading="lazy"><div class="honor-body"><b data-i18n="cert0.title">中国好创意暨全国数字艺术设计大赛</b><span data-i18n="cert0.sub">2024 · 国家级一等奖 · 数字摄影类 · 《瓷·城》</span></div></button><button class="honor honor-slide" type="button" data-image="cert1" data-zoom="点击查看"><img src="./assets/honors/provincial-first-2024-preview.webp" data-full="./assets/honors/provincial-first-2024.webp" alt="2024 · 省级一等奖 · 数字影像动画设计 · 《数字敦煌》获奖证书" loading="lazy"><div class="honor-body"><b data-i18n="cert1.title">湖南省大学生数字媒体创意设计大赛</b><span data-i18n="cert1.sub">2024 · 省级一等奖 · 数字影像动画设计 · 《数字敦煌》</span></div></button><button class="honor honor-slide" type="button" data-image="cert2" data-zoom="点击查看"><img src="./assets/honors/provincial-second-2023.jpg" alt="2023 · 省级二等奖 · 短视频现场限时赛 · 《醴陵印象》获奖证书" loading="lazy"><div class="honor-body"><b data-i18n="cert2.title">湖南省大学生数字媒体创意设计大赛</b><span data-i18n="cert2.sub">2023 · 省级二等奖 · 短视频现场限时赛 · 《醴陵印象》</span></div></button><button class="honor honor-slide" type="button" data-image="cert3" data-zoom="点击查看"><img src="./assets/honors/provincial-second-2022.jpg" alt="2022 · 省级二等奖 · 短视频创作组 · “同心向未来”主题现场赛获奖证书" loading="lazy"><div class="honor-body"><b data-i18n="cert3.title">湖南省大学生数字媒体创意设计大赛</b><span data-i18n="cert3.sub">2022 · 省级二等奖 · 短视频创作组 · “同心向未来”主题现场赛</span></div></button></div><div class="honor-text"><div class="honor-note reveal d0"><b data-i18n="h0.t">中国好创意暨全国数字艺术设计大赛</b><span data-i18n="h0.s">国家级一等奖</span></div><div class="honor-note reveal d1"><b data-i18n="h1.t">湖南省大学生数字媒体创意设计大赛</b><span data-i18n="h1.s">省级一等奖</span></div><div class="honor-note reveal d2"><b data-i18n="h2.t">湖南省第十届公益广告大赛</b><span data-i18n="h2.s">省级三等奖</span></div></div><!-- TODO: 公益广告三等奖暂无证书，保留资料中的文字记录，不匹配其他证书。 --></section></main><section class="contact" id="contact"><div class="wrap"><h2 data-i18n-html="contact.title" class="reveal">期待与你<br><em>进一步沟通</em></h2><p data-i18n="contact.sub" class="contact-sub reveal d1">关注 AI 应用、Agent 与 AI 工作流方向的机会，欢迎联系交流。</p><div class="contact-grid"><a class="contact-item reveal" href="tel:15939208673"><span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span data-i18n="contact.phone">电话</span></span><b>15939208673</b></a><a class="contact-item reveal d1" href="mailto:pigerzhu956@gmail.com"><span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7L22 6"/></svg><span data-i18n="contact.mail">邮箱</span></span><b>pigerzhu956@gmail.com</b></a><div class="contact-item reveal d2"><span data-i18n="contact.wechat">微信</span><b>cliphadeng</b></div></div><div class="hero-actions reveal"><a class="btn dark magnetic" href="./assets/resume.pdf" download="朱利锋-简历.pdf"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M5 16v4h14v-4"/></svg><span data-i18n="hero.resume">下载简历</span></a><a class="btn dark magnetic" href="https://github.com/pigerzhu956-sudo" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div><div class="footer-bottom"><span data-i18n="footer.copy">© 2026 朱利锋 · pigerzhu956@gmail.com</span><span data-i18n="footer.credit">原模板设计：Jing Xu</span></div></div></section><div class="lightbox" id="lightbox"><button type="button" aria-label="关闭 / Close">×</button><img alt="图片预览 / Image preview"></div>
+<script>
+const I18N = {
+  "zh": {
+    "brand": "朱利锋",
+    "nav.education": "学历",
+    "nav.skills": "技能",
+    "nav.experience": "经历",
+    "nav.projects": "项目",
+    "nav.honors": "荣誉",
+    "hero.tag0": "AI Agent",
+    "hero.tag1": "Codex",
+    "hero.tag2": "AI Workflow",
+    "hero.tag3": "AI Video",
+    "hero.tag4": "Vibe Coding",
+    "hero.title": "数字媒体艺术背景，专注 <em>AI 应用、Agent 与自动化工作流</em>。",
+    "hero.copy": "结合内容创作经验，实践 AI 视频与 Agent 项目，让需求从方案走向交付。",
+    "hero.resume": "下载简历",
+    "kw0": "AI 工具与 Agent 实践",
+    "kw1": "内容生产与项目落地",
+    "kw2": "需求拆解与快速学习",
+    "kw3": "沟通协作与持续交付",
+    "hero.cue": "向下滚动，开始了解我",
+    "meta0.k": "城市",
+    "meta0.v": " · 杭州",
+    "meta1.k": "背景",
+    "meta1.v": " · 数字媒体艺术",
+    "meta2.k": "方向",
+    "meta2.v": " · AI 应用 / Agent / AI 工作流",
+    "education.index": "01 / Education",
+    "education.title": "学历背景",
+    "education.note": "数字媒体艺术本科背景，将摄影摄像、影视后期、视觉设计与分镜创作延伸到 AI 视频、Agent 与自动化工作流实践。",
+    "edu.period": "2021.09 — 2025.06",
+    "edu.degree": "本科",
+    "edu.school": "湖南工程学院",
+    "edu.major": "数字媒体艺术 · 本科",
+    "edu.desc": "系统接触摄影摄像、影视后期、视觉设计与分镜创作，并逐步将原有内容生产能力延伸到 AI 视频、Agent 与自动化工作流实践。",
+    "edu.tag0": "摄影与摄像",
+    "edu.tag1": "影视后期制作",
+    "edu.tag2": "视觉设计",
+    "edu.tag3": "广告创意与设计",
+    "edu.tag4": "剧本创作与分镜头",
+    "skills.index": "02 / Skills",
+    "skills.title": "核心技能",
+    "skills.note": "围绕 AI 工具、Agent 工作流与内容制作，连接需求拆解、执行交付和持续迭代。",
+    "sk0.t": "AI 工具",
+    "sk0.p": "ChatGPT / Codex / OpenClaw / Claude / Midjourney",
+    "sk1.t": "Agent 与工作流",
+    "sk1.p": "Agent、Prompt 工程、自动化工作流、API 调用、数据解析；持续实践需求拆解与快速学习。",
+    "sk2.t": "内容制作",
+    "sk2.p": "Premiere Pro / DaVinci Resolve / After Effects / Photoshop / 剪映；脚本撰写、分镜策划、拍摄执行、剪辑调色与文案撰写。",
+    "sk3.t": "办公与协作",
+    "sk3.p": "Excel / Word / PowerPoint / 飞书 / Notion；沟通协作、项目执行与持续交付。",
+    "experience.index": "03 / Experience",
+    "experience.title": "相关经历",
+    "experience.note": "从视频内容生产到 AI 生成内容质量评测，积累需求理解、执行交付与反馈迭代经验。",
+    "exp.current": "已入职 · 当前工作",
+    "exp0.company": "杭州凌岳数科科技",
+    "exp0.role": "AI 大模型训练师 / 视频 RFT",
+    "exp0.l0": "按照项目标准对 AI 生成内容进行质量评测与标注。",
+    "exp0.l1": "识别运动质量、美感、指令遵循等问题，完成问题分类、问题描述与优化建议。",
+    "exp0.l2": "为模型训练、评估与迭代提供高质量数据反馈。",
+    "exp1.date": "2026.03 — 2026.08",
+    "exp1.company": "中轩传媒文化有限公司",
+    "exp1.role": "短视频内容生产",
+    "exp1.l0": "负责多个内容账号的短视频生产，独立完成从需求理解、内容制作到成片交付的完整流程。",
+    "exp1.l1": "累计交付 100+ 视频，积累内容流程拆解、项目执行与持续交付经验。",
+    "exp2.date": "2025",
+    "exp2.company": "凤凰古城文旅局宣传视频",
+    "exp2.role": "文旅宣传项目",
+    "exp2.l0": "参与凤凰古城文旅官方宣传项目。",
+    "exp2.l1": "围绕传播需求完成素材采集、内容制作与成片交付，积累真实业务场景下的内容理解与项目落地经验。",
+    "projects.index": "04 / Projects",
+    "projects.title": "AI 实践项目",
+    "projects.note": "围绕真实需求构建 AI 视频生产流程与求职匹配 Agent，持续实践并迭代。",
+    "p0.time": "2026.05 — 至今 · 持续更新中",
+    "p0.name": "AI 自动化视频",
+    "p0.desc": "规划并搭建 AI 自动化视频生产流程，持续尝试提升视频生产效率与流程标准化。",
+    "p0.tag0": "ChatGPT",
+    "p0.tag1": "Codex",
+    "p0.tag2": "Remotion",
+    "p0.tag3": "剪映",
+    "p0.tag4": "可灵 AI",
+    "p0.tag5": "Sora",
+    "p0.tag6": "TTS",
+    "p0.l0": "完成从需求判断、脚本分镜到配音、字幕、渲染及 QA 审阅的完整闭环。",
+    "p0.l1": "持续尝试将 AI 工具用于视频生产效率提升与流程标准化。",
+    "p0.result": "价值：提升内容生产效率，降低视频制作门槛。",
+    "p1.time": "2026.05 — 至今 · 持续更新中",
+    "p1.name": "AI 求职匹配 Agent",
+    "p1.desc": "基于 Codex 与开源 Skill 搭建 AI 求职 Agent，辅助求职决策与简历优化。",
+    "p1.tag0": "Codex",
+    "p1.tag2": "ChatGPT",
+    "p1.tag3": "正则",
+    "p1.tag4": "表格存储",
+    "p1.l0": "自动解析岗位 JD，评估简历匹配度并提取高频技能。",
+    "p1.l1": "生成针对性优化建议与岗位归档。",
+    "p1.result": "价值：辅助求职决策，提升简历优化与岗位匹配效率。",
+    "honors.index": "05 / Honors",
+    "honors.title": "荣誉奖项",
+    "honors.note": "数字媒体艺术与创意设计相关奖项，点击证书可查看大图。",
+    "h0.t": "中国好创意暨全国数字艺术设计大赛",
+    "h0.s": "国家级一等奖",
+    "h1.t": "湖南省大学生数字媒体创意设计大赛",
+    "h1.s": "省级一等奖",
+    "h2.t": "湖南省第十届公益广告大赛",
+    "h2.s": "省级三等奖",
+    "contact.title": "期待与你<br><em>进一步沟通</em>",
+    "contact.sub": "关注 AI 应用、Agent 与 AI 工作流方向的机会，欢迎联系交流。",
+    "contact.phone": "电话",
+    "contact.mail": "邮箱",
+    "contact.wechat": "微信",
+    "footer.copy": "© 2026 朱利锋 · pigerzhu956@gmail.com",
+    "footer.credit": "原模板设计：Jing Xu",
+    "_name": "朱利锋",
+    "_title": "朱利锋 Piger Zhu | AI 应用 · Agent · AI 工作流",
+    "_marquee": [
+      "AI 智能体",
+      "自动化工作流",
+      "AI 视频",
+      "提示词工程",
+      "内容创作",
+      "需求拆解",
+      "项目交付",
+      "快速学习"
+    ],
+    "_zoom": "点击查看",
+    "cert0.title": "中国好创意暨全国数字艺术设计大赛",
+    "cert0.sub": "2024 · 国家级一等奖 · 数字摄影类 · 《瓷·城》",
+    "cert1.title": "湖南省大学生数字媒体创意设计大赛",
+    "cert1.sub": "2024 · 省级一等奖 · 数字影像动画设计 · 《数字敦煌》",
+    "cert2.title": "湖南省大学生数字媒体创意设计大赛",
+    "cert2.sub": "2023 · 省级二等奖 · 短视频现场限时赛 · 《醴陵印象》",
+    "cert3.title": "湖南省大学生数字媒体创意设计大赛",
+    "cert3.sub": "2022 · 省级二等奖 · 短视频创作组 · “同心向未来”主题现场赛"
+  },
+  "en": {
+    "brand": "Piger Zhu",
+    "nav.education": "Education",
+    "nav.skills": "Skills",
+    "nav.experience": "Experience",
+    "nav.projects": "Projects",
+    "nav.honors": "Honors",
+    "hero.tag0": "AI Agent",
+    "hero.tag1": "Codex",
+    "hero.tag2": "AI Workflow",
+    "hero.tag3": "AI Video",
+    "hero.tag4": "Vibe Coding",
+    "hero.title": "Digital Media Art background, focused on <em>AI applications, agents and automated workflows</em>.",
+    "hero.copy": "Combining content creation experience with AI video and agent projects, I turn practical needs into deliverables.",
+    "hero.resume": "Download Resume",
+    "kw0": "AI Tools & Agents",
+    "kw1": "Content & Delivery",
+    "kw2": "Problem Solving & Learning",
+    "kw3": "Collaboration & Iteration",
+    "hero.cue": "Scroll down to explore",
+    "meta0.k": "Location",
+    "meta0.v": " · Hangzhou",
+    "meta1.k": "Background",
+    "meta1.v": " · Digital Media Art",
+    "meta2.k": "Focus",
+    "meta2.v": " · AI Applications / Agents / Workflows",
+    "education.index": "01 / Education",
+    "education.title": "Education",
+    "education.note": "A Digital Media Art background connects photography, post-production, visual design and storyboarding with AI video, agents and automated workflows.",
+    "edu.period": "Sep 2021 — Jun 2025",
+    "edu.degree": "Bachelor’s Degree",
+    "edu.school": "Hunan Institute of Engineering",
+    "edu.major": "Digital Media Art · Bachelor’s Degree",
+    "edu.desc": "Studied photography, video production, post-production, visual design and storyboarding, and gradually extended these content skills into AI video, agents and automated workflows.",
+    "edu.tag0": "Photography & Video",
+    "edu.tag1": "Post-production",
+    "edu.tag2": "Visual Design",
+    "edu.tag3": "Advertising Design",
+    "edu.tag4": "Scripts & Storyboards",
+    "skills.index": "02 / Skills",
+    "skills.title": "Skills",
+    "skills.note": "AI tools, agent workflows and content production connect requirements, delivery and iteration.",
+    "sk0.t": "AI Tools",
+    "sk0.p": "ChatGPT / Codex / OpenClaw / Claude / Midjourney",
+    "sk1.t": "Agents & Workflows",
+    "sk1.p": "Agents, prompt engineering, automated workflows, API calls and data parsing; practical problem solving and rapid learning.",
+    "sk2.t": "Content Production",
+    "sk2.p": "Premiere Pro / DaVinci Resolve / After Effects / Photoshop / CapCut; scripts, storyboards, filming, editing, color grading and copywriting.",
+    "sk3.t": "Office & Collaboration",
+    "sk3.p": "Excel / Word / PowerPoint / Feishu / Notion; collaboration, project execution and consistent delivery.",
+    "experience.index": "03 / Experience",
+    "experience.title": "Experience",
+    "experience.note": "From video production to AI content quality assessment, my work spans requirements, delivery and iterative feedback.",
+    "exp.current": "Current Role",
+    "exp0.company": "Hangzhou Lingyue Digital Technology",
+    "exp0.role": "AI Model Trainer / Video RFT",
+    "exp0.l0": "Evaluate and annotate AI-generated content according to project standards.",
+    "exp0.l1": "Identify issues in motion quality, aesthetics and instruction following; classify issues and provide descriptions and improvement suggestions.",
+    "exp0.l2": "Provide high-quality data feedback for model training, evaluation and iteration.",
+    "exp1.date": "Mar 2026 — Aug 2026",
+    "exp1.company": "Zhongxuan Media Culture Co., Ltd.",
+    "exp1.role": "Short-form Video Production",
+    "exp1.l0": "Produced short-form videos for multiple content accounts, independently handling requirements, production and final delivery.",
+    "exp1.l1": "Delivered 100+ videos, gaining experience in workflow planning, project execution and consistent delivery.",
+    "exp2.date": "2025",
+    "exp2.company": "Fenghuang Ancient Town Tourism Promotional Video",
+    "exp2.role": "Tourism Promotion Project",
+    "exp2.l0": "Participated in an official tourism promotion project for Fenghuang Ancient Town.",
+    "exp2.l1": "Collected footage, produced content and delivered the final video around communication needs, gaining practical project experience.",
+    "projects.index": "04 / Projects",
+    "projects.title": "AI Projects",
+    "projects.note": "Building and iterating AI video workflows and a job-matching agent around practical needs.",
+    "p0.time": "May 2026 — Present · Ongoing",
+    "p0.name": "AI Video Automation",
+    "p0.desc": "Planning and building an AI video production workflow to improve efficiency and standardize production.",
+    "p0.tag0": "ChatGPT",
+    "p0.tag1": "Codex",
+    "p0.tag2": "Remotion",
+    "p0.tag3": "CapCut",
+    "p0.tag4": "Kling AI",
+    "p0.tag5": "Sora",
+    "p0.tag6": "TTS",
+    "p0.l0": "Built an end-to-end process from requirements and storyboards to voiceover, subtitles, rendering and QA review.",
+    "p0.l1": "Continuously exploring AI tools to improve video production efficiency and workflow consistency.",
+    "p0.result": "Value: Improve content production efficiency and lower the barrier to video creation.",
+    "p1.time": "May 2026 — Present · Ongoing",
+    "p1.name": "AI Job-matching Agent",
+    "p1.desc": "Built an AI job-search agent with Codex and open-source skills to support job-search decisions and resume improvement.",
+    "p1.tag0": "Codex",
+    "p1.tag2": "ChatGPT",
+    "p1.tag3": "Regular Expressions",
+    "p1.tag4": "Spreadsheet Storage",
+    "p1.l0": "Automatically parses job descriptions, evaluates resume fit and extracts recurring skills.",
+    "p1.l1": "Generates targeted improvement suggestions and archives job information.",
+    "p1.result": "Value: Support job-search decisions and improve resume optimization and job matching.",
+    "honors.index": "05 / Honors",
+    "honors.title": "Honors & Awards",
+    "honors.note": "Awards in digital media art and creative design. Click a certificate to view it in full.",
+    "h0.t": "China Creative Challenges Contest",
+    "h0.s": "National First Prize",
+    "h1.t": "Hunan University Student Digital Media Creative Design Competition",
+    "h1.s": "Provincial First Prize",
+    "h2.t": "10th Hunan Public Service Advertising Competition",
+    "h2.s": "Provincial Third Prize",
+    "contact.title": "Let's <em>talk</em>",
+    "contact.sub": "Interested in opportunities involving AI applications, agents and AI workflows. Feel free to get in touch.",
+    "contact.phone": "Phone",
+    "contact.mail": "Email",
+    "contact.wechat": "WeChat",
+    "footer.copy": "© 2026 Piger Zhu · pigerzhu956@gmail.com",
+    "footer.credit": "Original template design: Jing Xu",
+    "_name": "Piger Zhu",
+    "_title": "Piger Zhu | AI Applications · Agents · Workflows",
+    "_marquee": [
+      "AI Agent",
+      "Codex",
+      "AI Workflow",
+      "AI Video",
+      "Vibe Coding",
+      "ChatGPT",
+      "OpenClaw",
+      "Remotion",
+      "Prompt Engineering"
+    ],
+    "_zoom": "View image",
+    "cert0.title": "China Creative Challenges Contest",
+    "cert0.sub": "2024 · National First Prize · Digital Photography · Porcelain City",
+    "cert1.title": "Hunan Digital Media Creative Design Competition",
+    "cert1.sub": "2024 · Provincial First Prize · Digital Animation · Digital Dunhuang",
+    "cert2.title": "Hunan Digital Media Creative Design Competition",
+    "cert2.sub": "2023 · Provincial Second Prize · Short Video · Impressions of Liling",
+    "cert3.title": "Hunan Digital Media Creative Design Competition",
+    "cert3.sub": "2022 · Provincial Second Prize · Short Video · Together Towards the Future"
+  }
+};
+let LANG = 'zh';
+try { const saved = localStorage.getItem('portfolio-lang'); if (saved === 'zh' || saved === 'en') LANG = saved; } catch {}
+
+function t(key) { return (I18N[LANG] && I18N[LANG][key]) || I18N.zh[key] || key; }
+
+function splitName(name, isEn) {
+  const frag = document.createDocumentFragment();
+  const chars = isEn ? name.replace(/ /g, '\u00A0').split('') : name.split('');
+  chars.forEach((c, i) => {
+    const s = document.createElement('span');
+    s.className = 'ch' + (isEn ? ' latin' : ' zh');
+    s.textContent = c;
+    s.style.animationDelay = (0.05 + i * 0.055) + 's';
+    frag.appendChild(s);
+  });
+  return frag;
+}
+
+function renderName() {
+  const el = document.getElementById('heroName');
+  if (!el) return;
+  el.innerHTML = '';
+  el.appendChild(splitName(I18N[LANG]._name, LANG === 'en'));
+}
+
+function renderMarquee() {
+  const track = document.getElementById('marqueeTrack');
+  if (!track) return;
+  const items = I18N[LANG]._marquee;
+  let html = '';
+  for (let r = 0; r < 2; r++) items.forEach(w => { html += '<span>' + w + '</span>'; });
+  track.innerHTML = html;
+}
+
+function applyLang(lang, animate) {
+  LANG = lang;
+  try { localStorage.setItem('portfolio-lang', lang); } catch {}
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.title = I18N[lang]._title;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[lang][key] !== undefined) el.textContent = I18N[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (I18N[lang][key] !== undefined) el.innerHTML = I18N[lang][key];
+  });
+  document.querySelectorAll('.honor-slide').forEach(el => el.setAttribute('data-zoom', I18N[lang]._zoom));
+
+  const toggle = document.getElementById('langToggle');
+  toggle.classList.toggle('en', lang === 'en');
+  toggle.querySelectorAll('.opt').forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
+
+  renderName();
+  renderMarquee();
+}
+
+document.getElementById('langToggle').addEventListener('click', () => {
+  applyLang(LANG === 'zh' ? 'en' : 'zh');
+});
+
+/* ==================== REVEAL ==================== */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal, .edu-node, .skill').forEach(el => io.observe(el));
+
+/* ==================== NAV / PROGRESS ==================== */
+const nav = document.getElementById('nav');
+const progress = document.getElementById('progress');
+function onScroll() {
+  nav.classList.toggle('scrolled', window.scrollY > 24);
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  progress.style.width = max > 0 ? (window.scrollY / max * 100) + '%' : '0%';
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+/* ==================== CURSOR GLOW ==================== */
+const glow = document.getElementById('cursorGlow');
+let gx = -400, gy = -400, tx = -400, ty = -400, glowRaf = null;
+function glowLoop() {
+  gx += (tx - gx) * .12;
+  gy += (ty - gy) * .12;
+  glow.style.transform = 'translate(' + gx + 'px,' + gy + 'px)';
+  glowRaf = requestAnimationFrame(glowLoop);
+}
+window.addEventListener('mousemove', e => {
+  tx = e.clientX; ty = e.clientY;
+  document.body.classList.add('has-cursor');
+  if (!glowRaf) glowLoop();
+}, { passive: true });
+
+/* ==================== TILT + SPOTLIGHT ==================== */
+const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+if (fine) {
+  document.querySelectorAll('.skill, .exp-card, .project-card, .edu-card, .academic-card, .honor-note').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      card.style.setProperty('--mx', x + 'px');
+      card.style.setProperty('--my', y + 'px');
+      if (card.classList.contains('skill')) {
+        const rx = ((y / r.height) - .5) * -7;
+        const ry = ((x / r.width) - .5) * 7;
+        card.style.transform = 'perspective(800px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) translateY(-6px)';
+      }
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
+
+/* ==================== MAGNETIC BUTTONS ==================== */
+if (fine) {
+  document.querySelectorAll('.magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      btn.style.transform = 'translate(' + x * .18 + 'px,' + y * .28 + 'px)';
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+}
+
+/* ==================== PORTRAIT PARALLAX ==================== */
+let pRaf = null;
+function parallax() {
+  pRaf = null;
+  const y = window.scrollY;
+  const p = document.querySelector('.portrait');
+  if (p && y < window.innerHeight) p.style.transform = 'rotate(1.5deg) translateY(' + Math.min(26, y * .035) + 'px)';
+}
+window.addEventListener('scroll', () => { if (!pRaf) pRaf = requestAnimationFrame(parallax); }, { passive: true });
+
+/* V1 assets use relative static URLs; no Base64 resume or old images. */
+
+/* ==================== HONOR CAROUSEL ==================== */
+document.querySelectorAll('.honor-carousel').forEach(carousel => {
+  const slides = Array.from(carousel.querySelectorAll('.honor-slide'));
+  if (!slides.length) return;
+  const AUTOPLAY_MS = 3000;
+  const TRANSITION_MS = 400;
+  let activeIndex = 0;
+  let timer = null;
+  let isPaused = false;
+  let isAnimating = false;
+
+  function getIndex(offset) {
+    return (activeIndex + offset + slides.length) % slides.length;
+  }
+  function getSlidePosition(index, exitingPrevIndex) {
+    if (index === activeIndex) return 0;
+    if (index === getIndex(-1)) return -1;
+    if (index === getIndex(1)) return 1;
+    if (index === exitingPrevIndex) return -2;
+    return 2;
+  }
+  function renderCarousel(exitingPrevIndex) {
+    slides.forEach((slide, index) => {
+      const position = getSlidePosition(index, exitingPrevIndex);
+      slide.classList.toggle('is-active', position === 0);
+      slide.classList.toggle('is-prev', position === -1);
+      slide.classList.toggle('is-next', position === 1);
+      slide.classList.toggle('is-before-prev', position === -2);
+      slide.classList.toggle('is-after-next', position === 2);
+      slide.setAttribute('aria-hidden', Math.abs(position) > 1 ? 'true' : 'false');
+    });
+  }
+  function showNext() {
+    if (isAnimating) return;
+    const exitingPrevIndex = getIndex(-1);
+    isAnimating = true;
+    stopCarousel();
+    activeIndex = getIndex(1);
+    renderCarousel(exitingPrevIndex);
+    window.setTimeout(() => {
+      carousel.classList.add('is-settling');
+      renderCarousel();
+      window.requestAnimationFrame(() => carousel.classList.remove('is-settling'));
+      isAnimating = false;
+      if (!isPaused) startCarousel();
+    }, TRANSITION_MS);
+  }
+  function startCarousel() {
+    stopCarousel();
+    timer = window.setTimeout(showNext, AUTOPLAY_MS);
+  }
+  function stopCarousel() {
+    if (timer) window.clearTimeout(timer);
+    timer = null;
+  }
+  renderCarousel();
+  startCarousel();
+  carousel.addEventListener('mouseenter', () => { isPaused = true; stopCarousel(); });
+  carousel.addEventListener('mouseleave', () => {
+    isPaused = false;
+    stopCarousel();
+    if (isAnimating) return;
+    showNext();
+  });
+});
+
+/* ==================== LIGHTBOX ==================== */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = lightbox.querySelector('img');
+document.querySelectorAll('[data-image]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('honor')) {
+      const image = btn.querySelector('img'); lightboxImg.src = image.getAttribute('data-full') || image.src;
+    } else {
+      const source = btn.querySelector('img');
+      if (!source || !source.getAttribute('src')) return;
+      lightboxImg.src = source.src;
+    }
+    lightbox.classList.add('open');
+  });
+});
+function closeLightbox() { lightbox.classList.remove('open'); lightboxImg.removeAttribute('src'); }
+lightbox.querySelector('button').addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+/* ==================== INIT ==================== */
+applyLang(LANG);
+</script>
+</body>
+</html>
